@@ -23,6 +23,8 @@ import javax.swing.WindowConstants;
  *
  * @author Tobias Mellstrand
  * @date 2017-12-29
+ * 
+ * The GUI for the client
  */
 public class ViewControl extends JFrame implements ActionListener {
     
@@ -43,12 +45,18 @@ public class ViewControl extends JFrame implements ActionListener {
     private JTextField messageField;
     private String username;
     
-    
+    /**
+     * Constructor
+     * @param jsmClient For JMS MessageQueue setup and message handling
+     */
     public ViewControl(JSMClient jsmClient) {
         this.jsmClient = jsmClient;
         initComponents();
     }
     
+    /**
+    * Setup the GUI components and layout
+    */ 
     private void initComponents() {
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -142,6 +150,9 @@ public class ViewControl extends JFrame implements ActionListener {
         
     }
     
+    /**
+     * Setup the new GUI after the client has connected
+     */
     public void initOpenChatComponents() {
         this.startButton.setVisible(false);
         this.closeButton.setVisible(true);
@@ -151,7 +162,13 @@ public class ViewControl extends JFrame implements ActionListener {
         this.chatContent.setEnabled(false);
         this.messageField.setEnabled(true);
     }
-
+    
+    /**
+     * The Buttons ActionListeners actionPerformed method.
+     * All buttons have the same listener
+     * Look which button that was clicked, and then performed appropriate action
+     * @param ae 
+     */
     @Override
     public void actionPerformed(ActionEvent ae) {
         switch (ae.getActionCommand()) {
@@ -173,6 +190,9 @@ public class ViewControl extends JFrame implements ActionListener {
         
     }
     
+    /**
+     * Connects to the topic
+     */
     private void startChat() {
         try {
             this.username = nameField.getText();
@@ -187,6 +207,9 @@ public class ViewControl extends JFrame implements ActionListener {
         }
     }
     
+    /**
+     * Close the chat program
+     */
     private void closeChat() {
         try {
             jsmClient.closeConnection(username);
@@ -196,6 +219,9 @@ public class ViewControl extends JFrame implements ActionListener {
         }
     }
     
+    /**
+     * Close the chat program and unsubscribe from the topic
+     */
     private void closeAndUnsubscribeChat() {
         try {
             jsmClient.closeAndUnsubscribeConnection(username);
@@ -205,6 +231,10 @@ public class ViewControl extends JFrame implements ActionListener {
         }
     }
     
+    /**
+     * Send message to the topic
+     * @param ae 
+     */
     private void sendMessage(ActionEvent ae) {
         String message = messageField.getText();
         if(message != null) {
@@ -219,6 +249,12 @@ public class ViewControl extends JFrame implements ActionListener {
         }
     }
     
+    /**
+     * Get sending time for a message
+     * Example: 03 Jan 15:45
+     * @param timeStamp From when the send button is clicked
+     * @return Time in given format from example above
+     */
     private String getTimeString(long timeStamp) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm");
         Calendar date = Calendar.getInstance(new Locale("sv", "SV"));
@@ -226,12 +262,21 @@ public class ViewControl extends JFrame implements ActionListener {
         return "(" + sdf.format(date.getTime()) + ")";
     }
     
+    /**
+     * Update the TextArea with send or received message
+     * @param message String to update area with
+     */
     public void updateChatContent(String message) {
         String content = chatContent.getText();
         content += "\n" + message;
         this.chatContent.setText(content);
     }
 
+    /**
+     * Displays error message dialog
+     * @param error Type of error
+     * @param message User friendly explanation of the error
+     */
     private void showErrorMessage(String error, String message) {
         JOptionPane.showMessageDialog(null, message + "\n" + error, "Error", ERROR_MESSAGE);
     }

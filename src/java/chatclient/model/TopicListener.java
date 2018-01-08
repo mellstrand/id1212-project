@@ -9,6 +9,9 @@ import javax.jms.TextMessage;
  *
  * @author Tobias Mellstrand
  * @date 2017-12-29
+ * 
+ * MessageListener for topics
+ * Takes a reference to a client to be able to deliver messages back
  */
 public class TopicListener implements MessageListener {
     
